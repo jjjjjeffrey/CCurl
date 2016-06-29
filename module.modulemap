@@ -1,5 +1,5 @@
 module CCurl [system] {
-    header "/usr/include/curl/curl.h"
+    header "swift_curl.h"
     link "curl"
     export *
 }
