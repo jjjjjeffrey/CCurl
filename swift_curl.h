@@ -10,75 +10,63 @@
 #define swift_curl_h
 
 #include <curl/curl.h>
+#include <stdbool.h>
+#include <stdio.h>
 
-#ifdef CURLOPT_HEADERDATA
-#undef CURLOPT_HEADERDATA
-CURLoption CURLOPT_HEADERDATA = CURLOPT_WRITEHEADER;
-#endif
-#ifdef CURLOPT_WRITEDATA
-#undef CURLOPT_WRITEDATA
-CURLoption CURLOPT_WRITEDATA = CURLOPT_FILE;
-#endif
-#ifdef CURLOPT_READDATA
-#undef CURLOPT_READDATA
-CURLoption CURLOPT_READDATA = CURLOPT_INFILE;
-#endif
+#define CURL_INLINE static __inline__
 
-typedef size_t (*curl_func)(void * ptr, size_t size, size_t num, void * ud);
+typedef size_t (*curl_func)(char * ptr, size_t size, size_t num, void * ud);
 
-extern inline CURLcode curl_easy_setopt_long(CURL *handle, CURLoption option, long value)
-{
-    return curl_easy_setopt(handle, option, value);
+CURL_INLINE CURLcode curl_easy_setopt_string(CURL *curl, CURLoption option, const char *param) {
+    return curl_easy_setopt(curl, option, param);
 }
 
-extern inline CURLcode curl_easy_setopt_cstr(CURL *handle, CURLoption option, const char * value)
-{
-    return curl_easy_setopt(handle, option, value);
+CURL_INLINE CURLcode curl_easy_setopt_bool(CURL *curl, CURLoption option, bool param) {
+    return curl_easy_setopt(curl, option, param);
 }
 
-extern inline CURLcode curl_easy_setopt_int64(CURL *handle, CURLoption option, long long value)
+CURL_INLINE CURLcode curl_easy_setopt_func(CURL *handle, CURLoption option, curl_func param)
 {
-    return curl_easy_setopt(handle, option, value);
+    return curl_easy_setopt(handle, option, param);
 }
 
-extern inline CURLcode curl_easy_setopt_slist(CURL *handle, CURLoption option, struct curl_slist * value)
+CURL_INLINE CURLcode curl_easy_setopt_pointer(CURL *handle, CURLoption option, const void* param)
 {
-    return curl_easy_setopt(handle, option, value);
+    return curl_easy_setopt(handle, option, param);
 }
 
-extern inline CURLcode curl_easy_setopt_void(CURL *handle, CURLoption option, void * value)
-{
-    return curl_easy_setopt(handle, option, value);
+CURL_INLINE CURLcode curl_easy_setopt_long(CURL *curl, CURLoption option, long param) {
+    return curl_easy_setopt(curl, option, param);
 }
 
-extern inline CURLcode curl_easy_setopt_func(CURL *handle, CURLoption option, curl_func value)
-{
-    return curl_easy_setopt(handle, option, value);
+CURL_INLINE CURLcode curl_easy_setopt_slist(CURL *curl, CURLoption option, struct curl_slist *param) {
+    return curl_easy_setopt(curl, option, param);
 }
 
-extern inline CURLcode curl_easy_getinfo_long(CURL *handle, CURLINFO option, long * value)
+CURL_INLINE CURLcode curl_easy_getinfo_long(CURL *handle, CURLINFO option, long *param)
 {
-    return curl_easy_getinfo(handle, option, value);
+    return curl_easy_getinfo(handle, option, param);
 }
 
-extern inline CURLcode curl_easy_getinfo_cstr(CURL *handle, CURLINFO option, const char ** value)
+CURL_INLINE CURLcode curl_easy_getinfo_string(CURL *handle, CURLINFO option, const char **param)
 {
-    return curl_easy_getinfo(handle, option, value);
+    return curl_easy_getinfo(handle, option, param);
 }
 
-extern inline CURLcode curl_easy_getinfo_double(CURL *handle, CURLINFO option, double * value)
+CURL_INLINE CURLcode curl_easy_getinfo_double(CURL *handle, CURLINFO option, double *param)
 {
-    return curl_easy_getinfo(handle, option, value);
+    return curl_easy_getinfo(handle, option, param);
 }
 
-extern inline CURLcode curl_easy_getinfo_slist(CURL *handle, CURLINFO option, struct curl_slist ** value)
+CURL_INLINE CURLcode curl_easy_getinfo_slist(CURL *handle, CURLINFO option, struct curl_slist **param)
 {
-    return curl_easy_getinfo(handle, option, value);
+    return curl_easy_getinfo(handle, option, param);
 }
 
-extern inline CURLcode curl_get_msg_result(CURLMsg * msg)
-{
-    return msg->data.result;
-}
+/** Public interface for FormAdd() */
+static
+CURLFORMcode FormAdd(struct curl_httppost **httppost,
+                     struct curl_httppost **last_post,
+                     va_list params);
 
 #endif /* swift_curl_h */
